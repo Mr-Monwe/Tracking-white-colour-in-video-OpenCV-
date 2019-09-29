@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-# Webcamera no 0 is used to capture the frames
+# Webcamera no 0 is used to capture the frames, or set file path in ""
 cap = cv2.VideoCapture(
     'C:/Users/nnamd/Desktop/IGVC CV Stack 2020/Datasets/VID2.mp4')
 
@@ -17,13 +17,13 @@ while(1):
     lower_white = np.array([0,0,255-sensitivity])
     upper_white = np.array([255,sensitivity,255])
 
-    # Here we are defining range of bluecolor in HSV
-    # This creates a mask of blue coloured
+    # Here we are defining range of whitecolor in HSV
+    # This creates a mask of white coloured
     # objects found in the frame.
     mask = cv2.inRange(hsv, lower_white, upper_white)
 
     # The bitwise and of the frame and mask is done so
-    # that only the blue coloured objects are highlighted
+    # that only the white coloured objects are highlighted
     # and stored in res
     res = cv2.bitwise_and(frame, frame, mask=mask)
     cv2.imshow('frame', frame)
