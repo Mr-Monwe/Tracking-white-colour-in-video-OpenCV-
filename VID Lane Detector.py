@@ -2,10 +2,9 @@ import cv2
 import numpy as np
 
 # Webcamera no 0 is used to capture the frames, or set file path in ""
-cap = cv2.VideoCapture(
-    'C:/Users/nnamd/Desktop/IGVC CV Stack 2020/Datasets/VID2.mp4')
-
+cap = cv2.VideoCapture('C:/Users/WSURobotics/Desktop/ADS Vision/VID2.mp4')
 # This drives the program into an infinite loop.
+
 while(1):
     # Captures the live stream frame-by-frame
     _, frame = cap.read()
@@ -29,7 +28,6 @@ while(1):
     cv2.imshow('frame', frame)
     cv2.imshow('mask', mask)
     cv2.imshow('res', res)
-
     # This displays the frame, mask
     # and res which we created in 3 separate windows.
     k = cv2.waitKey(5) & 0xFF

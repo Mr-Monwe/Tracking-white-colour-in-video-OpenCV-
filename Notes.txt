@@ -1,0 +1,189 @@
+#Misc Text Below#
+=========================================================
+//Code for converting image to gray and then find edges// 
+import cv2
+import numpy as np
+# Source image from location on computer 
+image = cv2.imread('C:/Users/nnamd/Desktop/IGVC CV Stack 2020/IMG1.jpg')
+
+resized = cv2.resize(image, None, fx=0.2, fy=0.21)
+gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+#edges = cv2.Canny(gray, 75, 150)
+
+cv2.imshow('Original image', resized)
+cv2.imshow('Gray image', gray)
+#cv2.imshow('Edges',edges)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+========================================================
+//Code for Gaussian blur side by side//
+import cv2
+import numpy
+
+# read image
+src = cv2.imread('IMG5.jpg', cv2.IMREAD_UNCHANGED)
+resized = cv2.resize(src, None, fx=0.2, fy=0.21) 
+
+# apply guassian blur on src image
+dst = cv2.GaussianBlur(resized,(5,5),cv2.BORDER_DEFAULT)
+ 
+# display input and output image
+cv2.imshow("Gaussian Smoothing",numpy.hstack((resized, dst)))
+cv2.waitKey(0) # waits until a key is pressed
+cv2.destroyAllWindows() # destroys the window showing image
+
+=========================================================
+
+//Code for image stats and plotting//
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+# reading in an image
+image = mpimg.imread('IMG1.jpg')
+# printing out some stats and plotting the image
+print('This image is:', type(image), 'with dimensions:', image.shape)
+plt.imshow(image)
+plt.show()
+========================================================
+
+//Code for trapezoid ROI//
+import numpy as np
+import cv2
+
+def region_of_interest(img, vertices):
+    # Define a blank matrix that matches the image height/width.
+    mask = np.zeros_like(img)
+    # Retrieve the number of color channels of the image.
+    channel_count = img.shape[2]
+    # Create a match color with the same color channel counts.
+    match_mask_color = (255,) * channel_count
+      
+    # Fill inside the polygon
+    cv2.fillPoly(mask, vertices, match_mask_color)
+    
+    # Returning the image only where mask pixels match
+    masked_image = cv2.bitwise_and(img, mask)
+    return masked_image
+
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+region_of_interest_vertices = [
+    (0, 2100),
+    (3357, 2100),
+    (2000, 1000),
+    (950,1000),
+]
+image = mpimg.imread('IMG5.jpg')
+cropped_image = region_of_interest(
+    image,
+    np.array([region_of_interest_vertices], np.int32),
+)
+plt.figure()
+plt.imshow(cropped_image)
+plt.show()
+==========================================================
+
+//Code for cropping afetr running canny edge detection//
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import numpy as np
+import cv2
+import math
+
+def region_of_interest(img, vertices):
+    mask = np.zeros_like(img)
+    match_mask_color = 255 # <-- This line altered for grayscale.
+    
+    cv2.fillPoly(mask, vertices, match_mask_color)
+    masked_image = cv2.bitwise_and(img, mask)
+    return masked_image
+region_of_interest_vertices = [
+    (0, 2100),
+    (3357, 2100),
+    (2000, 1000),
+    (950,1000),
+]
+image = mpimg.imread('IMG5.jpg')
+plt.figure()
+plt.imshow(image)
+plt.show()
+gray_image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+cannyed_image = cv2.Canny(gray_image, 100, 200)
+# Moved the cropping operation to the end of the pipeline.
+cropped_image = region_of_interest(
+    cannyed_image,
+    np.array([region_of_interest_vertices], np.int32)
+)
+plt.figure()
+plt.imshow(cropped_image)
+plt.show()
+=======================================================
+
+//Code for Vid to blur then edge detection//
+import cv2
+import numpy as np
+
+cap = cv2.VideoCapture('C:/Users/nnamd/Desktop/IGVC CV Stack 2020/Datasets/VID3.avi')
+
+while(cap.isOpened()):
+    ret, frame = cap.read()
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray,(5,5),cv2.BORDER_DEFAULT)
+    edges = cv2.Canny(blur, 75, 150)    
+
+    cv2.imshow('frame',edges)
+    if cv2.waitKey(1) & 0xFF == ord('x'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+===========================================================
+
+//Code for White pixel segmentation on  video feed//
+
+import cv2
+import numpy as np
+
+# Webcamera no 0 is used to capture the frames, or set file path in ""
+cap = cv2.VideoCapture(
+    'C:/Users/nnamd/Desktop/IGVC CV Stack 2020/Datasets/VID2.mp4')
+
+# This drives the program into an infinite loop.
+while(1):
+    # Captures the live stream frame-by-frame
+    _, frame = cap.read()
+    # Converts images from BGR to HSV
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    # define range of white color in HSV
+    # change it according to your need !
+    sensitivity = 100
+    lower_white = np.array([0,0,255-sensitivity])
+    upper_white = np.array([255,sensitivity,255])
+
+    # Here we are defining range of whitecolor in HSV
+    # This creates a mask of white coloured
+    # objects found in the frame.
+    mask = cv2.inRange(hsv, lower_white, upper_white)
+
+    # The bitwise and of the frame and mask is done so
+    # that only the white coloured objects are highlighted
+    # and stored in res
+    res = cv2.bitwise_and(frame, frame, mask=mask)
+    cv2.imshow('frame', frame)
+    cv2.imshow('mask', mask)
+    cv2.imshow('res', res)
+
+    # This displays the frame, mask
+    # and res which we created in 3 separate windows.
+    k = cv2.waitKey(5) & 0xFF
+    if k == 27:
+      break
+
+# Destroys all of the HighGUI windows.
+cv2.destroyAllWindows()
+# release the captured frame
+cap.release()
