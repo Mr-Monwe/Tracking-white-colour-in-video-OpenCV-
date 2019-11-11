@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Webcamera no 0 is used to capture the frames, or set file path in ""
-cap = cv2.VideoCapture('VID2.mp4')
+cap = cv2.VideoCapture('C:/Users/WSURobotics/Desktop/ADS Vision/VID2.mp4')
 # This drives the program into an infinite loop.
 
 while(1):
@@ -20,7 +20,7 @@ while(1):
     # This creates a mask of white coloured
     # objects found in the frame.
     mask = cv2.inRange(hsv, lower_white, upper_white)
-        
+
     # The bitwise and of the frame and mask is done so
     # that only the white coloured objects are highlighted
     # and stored in res
